@@ -33,14 +33,6 @@ FPS = 60
 
 b = True
 
-x = 120
-y = 620
-speed = 4
-is_player_heading_right = True
-
-
-
-
 
 class Game:
     def __init__(self):
@@ -59,9 +51,6 @@ class Game:
             
                 scene.e(event)
             scene.draw()
-
-                
-
             pygame.display.update()
 
 class Prev:
@@ -76,8 +65,7 @@ class Prev:
         if event.type == pygame.MOUSEBUTTONUP:
             # pygame.time.delay(800)
             print('01')
-            scene = Menu()
-            
+            scene = Menu()     
 
 class Menu:
     def draw(self):
@@ -123,22 +111,18 @@ class Menu:
                     pygame.quit()
                     sys.exit()
 
-
-
-
-
-
 class Training:
     def __init__(self):
+        global gg
         gg = GG()
         print('02')
 
     def draw(self):
-        global p
+        global p, gg
         screen.blit(bg_training, (0, 0))
         screen.blit(btn_pause, (5, 5))
         screen.blit(btn_restart, (45, 5))
-        gg = GG()
+        gg.draw()
 
         
     def e(self, event):
@@ -156,7 +140,6 @@ class Training:
             # .....................
             # restart прорисовки
             print('ns lt,bk') #  наврятли нужен
-        
         
 class Pause:
     def draw(self):
@@ -202,24 +185,32 @@ class Pause:
 
 class GG:
     def __init__(self):
-        global x, y, speed, is_player_heading_right
+        self.x = 120
+        self.y = 620
+        self.speed = 4
+        self.is_player_heading_right = True
+        self.jump = 10
         
-
+    def draw(self):
+        # global x, y, speed, is_player_heading_right
         keys = pygame.key.get_pressed()
 
         if keys[pygame.K_RIGHT]:
-            is_player_heading_right = True
-            x += speed
-        if keys[pygame.K_LEFT]:
-            is_player_heading_right = False
-            x -= speed
-        if keys[pygame.K_UP]:
-            y -= 4
+            self.is_player_heading_right = True
+            self.x = (self.x + self.speed + 60) % (1423 + 60) - 60
+        elif keys[pygame.K_LEFT]:
+            self.is_player_heading_right = False
+            self.x = (self.x - self.speed + 60) % (1423 + 60) - 60
 
-        if is_player_heading_right:
-            screen.blit(gg_heading_right, (x, y)) 
-        elif not is_player_heading_right:
-            screen.blit(gg_heading_left, (x, y)) 
+        if keys[pygame.K_UP] and self.y >= 0:
+            self.y -= 4
+        if keys[pygame.K_SPACE] and self.y >= 0:
+            self.y -= self.jump
+
+        if self.is_player_heading_right:
+            screen.blit(gg_heading_right, (self.x, self.y)) 
+        elif not self.is_player_heading_right:
+            screen.blit(gg_heading_left, (self.x, self.y)) 
     
 
 Game()
