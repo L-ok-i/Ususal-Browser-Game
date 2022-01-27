@@ -9,7 +9,6 @@ surf = pygame.image.load('img/png/cursor.png')
 color = pygame.cursors.Cursor((0, 0), surf)
 
 img_logo = pygame.image.load('img/png/main_logo.png').convert_alpha()
-
 bg_menu = pygame.image.load('img/jpg/bg-menu.jpg').convert()
 # btns_menu = pygame.image.load('img/png/btns.png').convert_alpha()
 btn_1 = pygame.image.load('img/png/buttons/btn1.png').convert_alpha()
@@ -51,26 +50,29 @@ class Game:
             
                 scene.e(event)
             scene.draw()
-            pygame.display.update()
 
 class Prev:
     def draw(self):
         global b
         if b:
             b = False
-            screen.blit(img_logo, (230, 170))
+            for i in range(0, 255):
+                screen.fill((0))
+                img_logo.set_alpha(i)  
+                screen.blit(img_logo, (230, 170))
+                pygame.display.update(230, 170, 800, 460)    
+
         
     def e(self, event):
-        global scene
+        global scene, b
         if event.type == pygame.MOUSEBUTTONUP:
-            # pygame.time.delay(800)
+            pygame.time.delay(500)
             print('01')
             scene = Menu()     
 
 class Menu:
     def draw(self):
         global b
-
         if not b:
             b = True
             screen.blit(bg_menu, (0, 0))
@@ -92,6 +94,7 @@ class Menu:
             screen.blit(btn_3_act, (120, 320))
         else:
             screen.blit(btn_3, (120, 320))
+        pygame.display.update()
 
     def e(self, event):
         global scene
@@ -103,13 +106,13 @@ class Menu:
             #
         if 120 < mouse[0] < 357 and 250 < mouse[1] < 287:
             if event.type == pygame.MOUSEBUTTONUP:
-                     pygame.time.delay(200)
-                     scene = Training()
+                pygame.time.delay(200)
+                scene = Training()
         if 120 < mouse[0] < 357 and 320 < mouse[1] < 357:
             if event.type == pygame.MOUSEBUTTONUP:
-                    pygame.time.delay(200)
-                    pygame.quit()
-                    sys.exit()
+                pygame.time.delay(200)
+                pygame.quit()
+                sys.exit()
 
 class Training:
     def __init__(self):
@@ -123,6 +126,8 @@ class Training:
         screen.blit(btn_pause, (5, 5))
         screen.blit(btn_restart, (45, 5))
         gg.draw()
+        pygame.display.update()
+        # pygame.display.update(gg.x, gg.y, gg.x, gg.y)
 
         
     def e(self, event):
@@ -143,7 +148,7 @@ class Training:
         
 class Pause:
     def draw(self):
-        global b, p
+        global b
         if b:
             b = False
             screen.blit(bg_menu, (0, 0))
@@ -163,6 +168,7 @@ class Pause:
             screen.blit(btn_3_act, (120, 320))
         else:
             screen.blit(btn_3, (120, 320))
+        pygame.display.update()
 
     def e(self, event):
         global b, scene
@@ -190,6 +196,7 @@ class GG:
         self.speed = 4
         self.is_player_heading_right = True
         self.jump = 10
+        self.is_jump = False
         
     def draw(self):
         # global x, y, speed, is_player_heading_right
