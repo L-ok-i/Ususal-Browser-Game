@@ -5,10 +5,12 @@ import sys
 # pygame.mixer.music.play(-1)
 
 screen = pygame.display.set_mode((1423, 800))
+icon_logo = pygame.image.load('img/png/icon.png')
+pygame.display.set_icon(icon_logo)
 surf = pygame.image.load('img/png/cursor.png')
 color = pygame.cursors.Cursor((0, 0), surf)
 
-img_logo = pygame.image.load('img/png/main_logo.png').convert_alpha()
+prev_logo = pygame.image.load('img/png/main_logo.png').convert_alpha()
 bg_menu = pygame.image.load('img/jpg/bg-menu.jpg').convert()
 # btns_menu = pygame.image.load('img/png/btns.png').convert_alpha()
 btn_1 = pygame.image.load('img/png/buttons/btn1.png').convert_alpha()
@@ -23,15 +25,16 @@ btn_4_act = pygame.image.load('img/png/buttons/btn4_act.png').convert_alpha()
 bg_training = pygame.image.load('img/jpg/bg-training.jpg').convert()
 gg_heading_right = pygame.image.load('img/png/units/pitonist(r).png')
 gg_heading_left = pygame.image.load('img/png/units/pitonist(l).png')
+US_heading_right = pygame.image.load('img/png/units/US(r).png')
+US_heading_left = pygame.image.load('img/png/units/US(l).png')
+js_heading_right = pygame.image.load('img/png/units/js(r).png')
+js_heading_left = pygame.image.load('img/png/units/js(l).png')
 
 btn_pause = pygame.image.load('img/png/buttons/btn-pause.png').convert_alpha()
 btn_restart = pygame.image.load('img/png/buttons/btn-restart.png').convert_alpha()
 
 clock = pygame.time.Clock()
 FPS = 60  
-
-b = True
-
 
 class Game:
     def __init__(self):
@@ -52,29 +55,32 @@ class Game:
             scene.draw()
 
 class Prev:
+    def __init__(self):
+        self.b = True
+
     def draw(self):
-        global b
-        if b:
-            b = False
+        if self.b:
+            self.b = False
             for i in range(0, 255):
                 screen.fill((0))
-                img_logo.set_alpha(i)  
-                screen.blit(img_logo, (230, 170))
+                prev_logo.set_alpha(i)  
+                screen.blit(prev_logo, (230, 170))
                 pygame.display.update(230, 170, 800, 460)    
 
-        
     def e(self, event):
-        global scene, b
+        global scene
         if event.type == pygame.MOUSEBUTTONUP:
             pygame.time.delay(500)
             print('01')
             scene = Menu()     
 
 class Menu:
+    def __init__(self):
+        self.b = True
+
     def draw(self):
-        global b
-        if not b:
-            b = True
+        if self.b:
+            self.b = False
             screen.blit(bg_menu, (0, 0))
             # screen.blit(btns_menu, (38, 99))
 
@@ -116,20 +122,18 @@ class Menu:
 
 class Training:
     def __init__(self):
-        global gg
-        gg = GG()
+        self.gg = GG()
         print('02')
 
     def draw(self):
-        global p, gg
         screen.blit(bg_training, (0, 0))
         screen.blit(btn_pause, (5, 5))
         screen.blit(btn_restart, (45, 5))
-        gg.draw()
+        self.gg.draw()
         pygame.display.update()
         # pygame.display.update(gg.x, gg.y, gg.x, gg.y)
 
-        
+
     def e(self, event):
         global scene
         mouse = pygame.mouse.get_pos()
@@ -145,12 +149,14 @@ class Training:
             # .....................
             # restart прорисовки
             print('ns lt,bk') #  наврятли нужен
-        
+
 class Pause:
+    def __init__(self):
+        self.b = True
+
     def draw(self):
-        global b
-        if b:
-            b = False
+        if self.b:
+            self.b = False
             screen.blit(bg_menu, (0, 0))
             # screen.blit(btns_menu, (38, 99))
         mouse = pygame.mouse.get_pos()
@@ -171,16 +177,16 @@ class Pause:
         pygame.display.update()
 
     def e(self, event):
-        global b, scene
+        global scene
         mouse = pygame.mouse.get_pos()
 
         if 120 < mouse[0] < 357 and 180 < mouse[1] < 217:
             if event.type == pygame.MOUSEBUTTONUP:
-                b = True
+                self.b = True
                 scene = Training()
         if 120 < mouse[0] < 357 and 250 < mouse[1] < 287:
             if event.type == pygame.MOUSEBUTTONUP:
-                b = True
+                self.b = True
                 pygame.time.delay(200)
                 scene = Training()
         if 120 < mouse[0] < 357 and 320 < mouse[1] < 357:
@@ -192,33 +198,64 @@ class Pause:
 class GG:
     def __init__(self):
         self.x = 120
-        self.y = 620
-        self.speed = 4
+        self.y = 320
+        self.speed = 10
         self.is_player_heading_right = True
-        self.jump = 10
+        self.jumpower = 20
+        self.V = [0, 0]
+        self.acceleration = [0, 0]
         self.is_jump = False
-        
+        self.skin = [gg_heading_right, gg_heading_left]
     def draw(self):
         # global x, y, speed, is_player_heading_right
         keys = pygame.key.get_pressed()
 
+        if keys[pygame.K_1]:
+            self.skin = [gg_heading_right, gg_heading_left]
+        if keys[pygame.K_2]:
+            self.skin = [js_heading_right, js_heading_left]
+        if keys[pygame.K_3]:
+            self.skin = [US_heading_right, US_heading_left]
+
         if keys[pygame.K_RIGHT]:
             self.is_player_heading_right = True
-            self.x = (self.x + self.speed + 60) % (1423 + 60) - 60
+            # self.x = (self.x + self.speed + 80) % (1423 + 80) - 80
+            if self.V[0] <= 10:
+                self.V[0] += 2
+
         elif keys[pygame.K_LEFT]:
             self.is_player_heading_right = False
-            self.x = (self.x - self.speed + 60) % (1423 + 60) - 60
+            # self.x = (self.x - self.speed + 80) % (1423 + 80) - 80
+            if self.V[0] <= 10:
+                self.V[0] -= 2
 
-        if keys[pygame.K_UP] and self.y >= 0:
-            self.y -= 4
-        if keys[pygame.K_SPACE] and self.y >= 0:
-            self.y -= self.jump
+        if keys[pygame.K_SPACE]:
+            if self.y == 675: 
+                self.V[1] -= 20
+        
+        self.y += self.V[1] 
+        self.x += self.V[0]  
+
+        self.V[0] += self.acceleration[0] 
+        self.V[1] += self.acceleration[1] 
+        self.V[0] *= 0.92
+        self.V[1] *= 0.99
+        if self.y > 675: 
+            self.y = 675 
+            self.acceleration[1] = 0 
+            if self.V[1] > 4: 
+                self.V[1] = -self.V[1]/8 
+            else: 
+                self.V[1] = 0 
+        elif self.y < 675: 
+            self.acceleration[1] = 1 
+
 
         if self.is_player_heading_right:
-            screen.blit(gg_heading_right, (self.x, self.y)) 
+            screen.blit(self.skin[0], (self.x, self.y)) 
         elif not self.is_player_heading_right:
-            screen.blit(gg_heading_left, (self.x, self.y)) 
+            screen.blit(self.skin[1], (self.x, self.y)) 
     
 
-Game()
+game = Game()
 
