@@ -199,13 +199,11 @@ class GG:
     def __init__(self):
         self.x = 120
         self.y = 320
-        self.speed = 10
         self.is_player_heading_right = True
-        self.jumpower = 20
         self.V = [0, 0]
         self.acceleration = [0, 0]
-        self.is_jump = False
         self.skin = [gg_heading_right, gg_heading_left]
+
     def draw(self):
         # global x, y, speed, is_player_heading_right
         keys = pygame.key.get_pressed()
@@ -219,15 +217,15 @@ class GG:
 
         if keys[pygame.K_RIGHT]:
             self.is_player_heading_right = True
-            # self.x = (self.x + self.speed + 80) % (1423 + 80) - 80
+            self.x = (self.x + 80) % (1423 + 80) - 80
             if self.V[0] <= 10:
                 self.V[0] += 2
 
         elif keys[pygame.K_LEFT]:
             self.is_player_heading_right = False
-            # self.x = (self.x - self.speed + 80) % (1423 + 80) - 80
+            self.x = (self.x + 80) % (1423 + 80) - 80
             if self.V[0] <= 10:
-                self.V[0] -= 2
+                self.V[0] -= 1
 
         if keys[pygame.K_SPACE]:
             if self.y == 675: 
