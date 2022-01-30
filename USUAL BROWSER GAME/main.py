@@ -221,16 +221,12 @@ class GG:
             if self.V[0] <= 10:
                 self.V[0] += 2
 
-        elif keys[pygame.K_LEFT]:
+        if keys[pygame.K_LEFT]:
             self.is_player_heading_right = False
             self.x = (self.x + 80) % (1423 + 80) - 80
-            if self.V[0] <= 10:
-                self.V[0] -= 1
+            if self.V[0] >= -10:
+                self.V[0] -= 2
 
-        if keys[pygame.K_SPACE]:
-            if self.y == 675: 
-                self.V[1] -= 20
-        
         self.y += self.V[1] 
         self.x += self.V[0]  
 
@@ -238,6 +234,11 @@ class GG:
         self.V[1] += self.acceleration[1] 
         self.V[0] *= 0.92
         self.V[1] *= 0.99
+
+        if keys[pygame.K_SPACE]:
+            if self.y == 675: 
+                self.V[1] -= 20
+
         if self.y > 675: 
             self.y = 675 
             self.acceleration[1] = 0 
@@ -247,7 +248,6 @@ class GG:
                 self.V[1] = 0 
         elif self.y < 675: 
             self.acceleration[1] = 1 
-
 
         if self.is_player_heading_right:
             screen.blit(self.skin[0], (self.x, self.y)) 
