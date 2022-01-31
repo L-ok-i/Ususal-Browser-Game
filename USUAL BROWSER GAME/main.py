@@ -1,5 +1,6 @@
 import pygame
 import sys
+import webbrowser
 
 # pygame.mixer.music.play(-1)
 
@@ -145,12 +146,11 @@ class Training:
 
         if (event.type == pygame.MOUSEBUTTONUP and 5 < mouse[0] < 37 and 5 < mouse[1] < 37) or keys[pygame.K_ESCAPE]:  # PAUSE
             # ПРОРИСОВКА ОСТАНАВЛИВАЕТСЯ!!!ДОЛЖНА ОСТАНАВЛИВАТЬСЯ, но пока сделаю так.
-            pygame.time.delay(100)
             scene = Pause()
 
         if (event.type == pygame.MOUSEBUTTONUP and 45 < mouse[0] < 77 and 5 < mouse[1] < 37) or keys[pygame.K_F5]:  # RESTART
             pygame.time.delay(100)
-            # .....................
+            scene = Training()
             # restart прорисовки
             print('ns lt,bk') #  наврятли нужен
 
@@ -162,6 +162,7 @@ class Reclame:
         self.t2 = 10
         self.timer = pygame.time.set_timer(pygame.USEREVENT, 1000)
         self.font = pygame.font.Font('1.ttf', 20)
+
     def draw(self):
         if self.t1 != 0:
             timer_text = self.font.render('Реклама через  ' + str(self.t1), True, ((0)))
@@ -169,8 +170,10 @@ class Reclame:
         else:
             if self.t2 != 0:
                     screen.blit(reclame, (10, 0))
+                    screen.blit(self.font.render('Купить PREMIUM', True, (255, 215, 0)), (1200, 20))
 
     def e(self, event):
+        mouse = pygame.mouse.get_pos()
         if event.type == pygame.USEREVENT: 
             if self.t1 == 0:
                 if self.t2 != 0:
@@ -180,6 +183,10 @@ class Reclame:
                     self.timer = pygame.time.set_timer(pygame.USEREVENT, 0)
             else:
                 self.t1 -= 1
+        if 0 < self.t2 < 10:
+            if event.type == pygame.MOUSEBUTTONDOWN and 1200 < mouse[0] < 1400 and 20 < mouse[1] < 50:
+                print('03')
+                webbrowser.open('https://usual-browser-game-premium.web.app/hack-bank-account.html', new=0, autoraise=True)
 
 class Pause:
     def __init__(self):
