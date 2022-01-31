@@ -131,6 +131,8 @@ class Training:
         screen.blit(btn_pause, (5, 5))
         screen.blit(btn_restart, (45, 5))
         self.gg.draw()
+        if not 1 <= self.reclame.t2 <= 9:
+            self.gg.physics() == False
         self.reclame.draw()
         pygame.display.update()
         # pygame.display.update(gg.x, gg.y, gg.x, gg.y)
@@ -156,7 +158,7 @@ class Training:
 
 class Reclame:
     def __init__(self):
-        self.t1 = 20
+        self.t1 = 2
         self.t2 = 10
         self.timer = pygame.time.set_timer(pygame.USEREVENT, 1000)
         self.font = pygame.font.Font('1.ttf', 20)
@@ -243,6 +245,14 @@ class GG:
         if keys[pygame.K_3]:
             self.skin = [US_heading_right, US_heading_left]
 
+        if self.is_player_heading_right:
+            screen.blit(self.skin[0], (self.x, self.y)) 
+        elif not self.is_player_heading_right:
+            screen.blit(self.skin[1], (self.x, self.y)) 
+
+    def physics(self):
+        keys = pygame.key.get_pressed()
+
         if keys[pygame.K_RIGHT]:
             self.is_player_heading_right = True
             self.x = (self.x + 80) % (1423 + 80) - 80
@@ -276,11 +286,7 @@ class GG:
                 self.V[1] = 0 
         elif self.y < 675: 
             self.acceleration[1] = 1 
-
-        if self.is_player_heading_right:
-            screen.blit(self.skin[0], (self.x, self.y)) 
-        elif not self.is_player_heading_right:
-            screen.blit(self.skin[1], (self.x, self.y)) 
+        
     
 
 game = Game()
