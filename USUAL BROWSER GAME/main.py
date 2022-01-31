@@ -1,6 +1,6 @@
 import pygame
 import sys
-
+from pygame.locals import*
 
 # pygame.mixer.music.play(-1)
 
@@ -9,6 +9,7 @@ icon_logo = pygame.image.load('img/png/icon.png')
 pygame.display.set_icon(icon_logo)
 surf = pygame.image.load('img/png/cursor.png')
 color = pygame.cursors.Cursor((0, 0), surf)
+pygame.font.get_fonts()
 
 prev_logo = pygame.image.load('img/png/main_logo.png').convert_alpha()
 bg_menu = pygame.image.load('img/jpg/bg-menu.jpg').convert()
@@ -29,6 +30,7 @@ US_heading_right = pygame.image.load('img/png/units/US(r).png')
 US_heading_left = pygame.image.load('img/png/units/US(l).png')
 js_heading_right = pygame.image.load('img/png/units/js(r).png')
 js_heading_left = pygame.image.load('img/png/units/js(l).png')
+reklam = pygame.image.load('img/jpg/реклама.jpg')
 
 btn_pause = pygame.image.load('img/png/buttons/btn-pause.png').convert_alpha()
 btn_restart = pygame.image.load('img/png/buttons/btn-restart.png').convert_alpha()
@@ -123,6 +125,7 @@ class Menu:
 class Training:
     def __init__(self):
         self.gg = GG()
+        self.reklam = Reklam()
         print('02')
 
     def draw(self):
@@ -130,9 +133,9 @@ class Training:
         screen.blit(btn_pause, (5, 5))
         screen.blit(btn_restart, (45, 5))
         self.gg.draw()
+        self.reklam.draw()
         pygame.display.update()
         # pygame.display.update(gg.x, gg.y, gg.x, gg.y)
-
 
     def e(self, event):
         global scene
@@ -144,11 +147,40 @@ class Training:
             # ПРОРИСОВКА ОСТАНАВЛИВАЕТСЯ!!!ДОЛЖНА ОСТАНАВЛИВАТЬСЯ, но пока сделаю так.
             pygame.time.delay(100)
             scene = Pause()
+
         if (event.type == pygame.MOUSEBUTTONUP and 45 < mouse[0] < 77 and 5 < mouse[1] < 37) or keys[pygame.K_F5]:  # RESTART
             pygame.time.delay(100)
             # .....................
             # restart прорисовки
             print('ns lt,bk') #  наврятли нужен
+
+        self.reklam.e(event)
+
+class Reklam:
+    def __init__(self):
+        self.b = True
+        self.t1 = 20
+        self.t2 = 10
+        self.timer = pygame.time.set_timer(pygame.USEREVENT, 1000)
+        self.font = pygame.font.Font('1.ttf', 20)
+    def draw(self):
+        if self.t1 != 0:
+            timer_text = self.font.render('Реклама через  ' + str(self.t1), True, ((0)))
+            screen.blit(timer_text, (1200, 20))
+        else:
+            if self.t2 != 0:
+                    screen.blit(reklam, (0, 0))
+
+    def e(self, event):
+        if event.type == pygame.USEREVENT: 
+            if self.t1 == 0:
+                if self.t2 != 0:
+                    self.timer = pygame.time.set_timer(pygame.USEREVENT, 1000)
+                    self.t2 -= 1
+                else:
+                    self.timer = pygame.time.set_timer(pygame.USEREVENT, 0)
+            else:
+                self.t1 -= 1
 
 class Pause:
     def __init__(self):
@@ -205,7 +237,6 @@ class GG:
         self.skin = [gg_heading_right, gg_heading_left]
 
     def draw(self):
-        # global x, y, speed, is_player_heading_right
         keys = pygame.key.get_pressed()
 
         if keys[pygame.K_1]:
