@@ -1,6 +1,5 @@
 import pygame
 import sys
-from pygame.locals import*
 
 # pygame.mixer.music.play(-1)
 
@@ -9,7 +8,6 @@ icon_logo = pygame.image.load('img/png/icon.png')
 pygame.display.set_icon(icon_logo)
 surf = pygame.image.load('img/png/cursor.png')
 color = pygame.cursors.Cursor((0, 0), surf)
-pygame.font.get_fonts()
 
 prev_logo = pygame.image.load('img/png/main_logo.png').convert_alpha()
 bg_menu = pygame.image.load('img/jpg/bg-menu.jpg').convert()
@@ -30,7 +28,7 @@ US_heading_right = pygame.image.load('img/png/units/US(r).png')
 US_heading_left = pygame.image.load('img/png/units/US(l).png')
 js_heading_right = pygame.image.load('img/png/units/js(r).png')
 js_heading_left = pygame.image.load('img/png/units/js(l).png')
-reklam = pygame.image.load('img/jpg/реклама.jpg')
+reclame = pygame.image.load('img/jpg/реклама.jpg')
 
 btn_pause = pygame.image.load('img/png/buttons/btn-pause.png').convert_alpha()
 btn_restart = pygame.image.load('img/png/buttons/btn-restart.png').convert_alpha()
@@ -125,7 +123,7 @@ class Menu:
 class Training:
     def __init__(self):
         self.gg = GG()
-        self.reklam = Reklam()
+        self.reclame = Reclame()
         print('02')
 
     def draw(self):
@@ -133,7 +131,7 @@ class Training:
         screen.blit(btn_pause, (5, 5))
         screen.blit(btn_restart, (45, 5))
         self.gg.draw()
-        self.reklam.draw()
+        self.reclame.draw()
         pygame.display.update()
         # pygame.display.update(gg.x, gg.y, gg.x, gg.y)
 
@@ -154,11 +152,10 @@ class Training:
             # restart прорисовки
             print('ns lt,bk') #  наврятли нужен
 
-        self.reklam.e(event)
+        self.reclame.e(event)
 
-class Reklam:
+class Reclame:
     def __init__(self):
-        self.b = True
         self.t1 = 20
         self.t2 = 10
         self.timer = pygame.time.set_timer(pygame.USEREVENT, 1000)
@@ -169,7 +166,7 @@ class Reklam:
             screen.blit(timer_text, (1200, 20))
         else:
             if self.t2 != 0:
-                    screen.blit(reklam, (0, 0))
+                    screen.blit(reclame, (10, 0))
 
     def e(self, event):
         if event.type == pygame.USEREVENT: 
