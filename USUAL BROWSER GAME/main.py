@@ -1,5 +1,5 @@
-import pygame
-import sys
+import pygame, sys
+from random import randrange
 import webbrowser
 
 # pygame.mixer.music.play(-1)
@@ -29,6 +29,7 @@ US_heading_right = pygame.image.load('img/png/units/US(r).png')
 US_heading_left = pygame.image.load('img/png/units/US(l).png')
 js_heading_right = pygame.image.load('img/png/units/js(r).png')
 js_heading_left = pygame.image.load('img/png/units/js(l).png')
+box_with_guns = pygame.image.load('img/png/units/box.png')
 reclame = pygame.image.load('img/jpg/реклама.jpg')
 
 btn_pause = pygame.image.load('img/png/buttons/btn-pause.png').convert_alpha()
@@ -125,6 +126,7 @@ class Training:
     def __init__(self):
         self.gg = GG()
         self.reclame = Reclame()
+        self.guns = Guns()
         print('02')
 
     def draw(self):
@@ -134,6 +136,7 @@ class Training:
         self.gg.draw()
         if not 1 <= self.reclame.t2 <= 9:
             self.gg.physics() == False
+        self.guns.box()
         self.reclame.draw()
         pygame.display.update()
         # pygame.display.update(gg.x, gg.y, gg.x, gg.y)
@@ -154,11 +157,12 @@ class Training:
             # restart прорисовки
             print('ns lt,bk') #  наврятли нужен
 
+        self.guns.e(event)
         self.reclame.e(event)
 
 class Reclame:
     def __init__(self):
-        self.t1 = 2
+        self.t1 = 20
         self.t2 = 10
         self.timer = pygame.time.set_timer(pygame.USEREVENT, 1000)
         self.font = pygame.font.Font('1.ttf', 20)
@@ -179,8 +183,8 @@ class Reclame:
                 if self.t2 != 0:
                     self.timer = pygame.time.set_timer(pygame.USEREVENT, 1000)
                     self.t2 -= 1
-                else:
-                    self.timer = pygame.time.set_timer(pygame.USEREVENT, 0)
+                # else:
+                #     self.timer = pygame.time.set_timer(pygame.USEREVENT, 0)
             else:
                 self.t1 -= 1
         if 0 < self.t2 < 10:
@@ -198,7 +202,6 @@ class Pause:
             screen.blit(bg_menu, (0, 0))
             # screen.blit(btns_menu, (38, 99))
         mouse = pygame.mouse.get_pos()
-        # click = pygame.mouse.get_pressed()
 
         if 120 < mouse[0] < 357 and 180 < mouse[1] < 217:
             screen.blit(btn_4_act, (120, 180))
@@ -277,7 +280,7 @@ class GG:
 
         self.V[0] += self.acceleration[0] 
         self.V[1] += self.acceleration[1] 
-        self.V[0] *= 0.92
+        self.V[0] *= 0.90
         self.V[1] *= 0.99
 
         if keys[pygame.K_SPACE]:
@@ -293,6 +296,43 @@ class GG:
                 self.V[1] = 0 
         elif self.y < 675: 
             self.acceleration[1] = 1 
+
+class Guns:
+    def __init__(self):
+        self.gg = GG()
+        self.x_box = randrange(20, 1400)
+        self.y_box = randrange(100, 500)
+        self.V = 20
+        self.acceleration = 0
+        self.time = randrange(5, 12)
+        self.timer = pygame.time.set_timer(pygame.USEREVENT, 1000)
+
+    def box(self):
+        if self.time == 0:
+            screen.blit(box_with_guns, (self.x_box, self.y_box))
+            self.y_box += self.V 
+            self.V += self.acceleration
+            self.V *= 1.03
+
+            if self.y_box > 745: 
+                self.y_box = 745
+                self.acceleration = 0
+                if self.V > 35: 
+                    self.V = -self.V/8
+                else: 
+                    self.V = 0 
+            elif self.y_box < 675: 
+                self.acceleration = 1
+            
+    def e(self, event):
+        if event.type == pygame.USEREVENT:
+            if self.time != 0:
+                self.time -= 1
+
+
+    def shot(self):
+        keys = pygame.key.get_pressed()
+        pass
         
     
 
