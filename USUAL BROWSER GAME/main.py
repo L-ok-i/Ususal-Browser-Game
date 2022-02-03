@@ -12,28 +12,33 @@ color = pygame.cursors.Cursor((0, 0), surf)
 
 prev_logo = pygame.image.load('img/png/main_logo.png').convert_alpha()
 bg_menu = pygame.image.load('img/jpg/bg-menu.jpg').convert()
-# btns_menu = pygame.image.load('img/png/btns.png').convert_alpha()
-btn_1 = pygame.image.load('img/png/buttons/btn1.png').convert_alpha()
-btn_2 = pygame.image.load('img/png/buttons/btn2.png').convert_alpha()
-btn_3 = pygame.image.load('img/png/buttons/btn3.png').convert_alpha()
-btn_1_act = pygame.image.load('img/png/buttons/btn1_act.png') .convert_alpha()
-btn_2_act = pygame.image.load('img/png/buttons/btn2_act.png').convert_alpha()
-btn_3_act = pygame.image.load('img/png/buttons/btn3_act.png').convert_alpha()
-btn_4 = pygame.image.load('img/png/buttons/btn4.png').convert_alpha()
-btn_4_act = pygame.image.load('img/png/buttons/btn4_act.png').convert_alpha()
+# btns_menu = pygame.image.load('img/png/btns.png').convert()
+btn_1 = pygame.image.load('img/png/buttons/btn1.png').convert()
+btn_2 = pygame.image.load('img/png/buttons/btn2.png').convert()
+btn_3 = pygame.image.load('img/png/buttons/btn3.png').convert()
+btn_1_act = pygame.image.load('img/png/buttons/btn1_act.png').convert()
+btn_2_act = pygame.image.load('img/png/buttons/btn2_act.png').convert()
+btn_3_act = pygame.image.load('img/png/buttons/btn3_act.png').convert()
+btn_4 = pygame.image.load('img/png/buttons/btn4.png').convert()
+btn_4_act = pygame.image.load('img/png/buttons/btn4_act.png').convert()
 
 bg_training = pygame.image.load('img/jpg/bg-training.jpg').convert()
-gg_heading_right = pygame.image.load('img/png/units/pitonist(r).png')
-gg_heading_left = pygame.image.load('img/png/units/pitonist(l).png')
-US_heading_right = pygame.image.load('img/png/units/US(r).png')
-US_heading_left = pygame.image.load('img/png/units/US(l).png')
-js_heading_right = pygame.image.load('img/png/units/js(r).png')
-js_heading_left = pygame.image.load('img/png/units/js(l).png')
-box_with_guns = pygame.image.load('img/png/units/box.png')
-reclame = pygame.image.load('img/jpg/реклама.jpg')
+gg_heading_right = pygame.image.load('img/png/units/pitonist(r).png').convert_alpha()  
+gg_heading_left = pygame.image.load('img/png/units/pitonist(l).png').convert_alpha()
+US_heading_right = pygame.image.load('img/png/units/US(r).png').convert_alpha()
+US_heading_left = pygame.image.load('img/png/units/US(l).png').convert_alpha()
+js_heading_right = pygame.image.load('img/png/units/js(r).png').convert_alpha()
+js_heading_left = pygame.image.load('img/png/units/js(l).png').convert_alpha()
+box_with_guns = pygame.image.load('img/png/units/box.png').convert()
+pitonist_with_USGUN_right = pygame.image.load('img/png/units/units-with-guns/pitonist-with-USGUN(r).png').convert_alpha()
+pitonist_with_USGUN_left = pygame.image.load('img/png/units/units-with-guns/pitonist-with-USGUN(l).png').convert_alpha()
+js_with_USGUN_right = pygame.image.load('img/png/units/units-with-guns/js-with-USGUN(r).png').convert_alpha()
+js_with_USGUN_left = pygame.image.load('img/png/units/units-with-guns/js-with-USGUN(l).png').convert_alpha()
 
-btn_pause = pygame.image.load('img/png/buttons/btn-pause.png').convert_alpha()
-btn_restart = pygame.image.load('img/png/buttons/btn-restart.png').convert_alpha()
+reclame = pygame.image.load('img/jpg/реклама.jpg').convert()
+
+btn_pause = pygame.image.load('img/png/buttons/btn-pause.png').convert()
+btn_restart = pygame.image.load('img/png/buttons/btn-restart.png').convert()
 
 clock = pygame.time.Clock()
 FPS = 60  
@@ -87,8 +92,7 @@ class Menu:
             # screen.blit(btns_menu, (38, 99))
 
         mouse = pygame.mouse.get_pos()
-        # click = pygame.mouse.get_pressed()
-
+        
         if 120 < mouse[0] < 357 and 180 < mouse[1] < 217:
             screen.blit(btn_1_act, (120, 180))
                 
@@ -126,7 +130,6 @@ class Training:
     def __init__(self):
         self.gg = GG()
         self.reclame = Reclame()
-        self.guns = Guns()
         print('02')
 
     def draw(self):
@@ -136,7 +139,6 @@ class Training:
         self.gg.draw()
         if not 1 <= self.reclame.t2 <= 9:
             self.gg.physics() == False
-        self.guns.box()
         self.reclame.draw()
         pygame.display.update()
         # pygame.display.update(gg.x, gg.y, gg.x, gg.y)
@@ -157,8 +159,8 @@ class Training:
             # restart прорисовки
             print('ns lt,bk') #  наврятли нужен
 
-        self.guns.e(event)
         self.reclame.e(event)
+        self.gg.e(event)
 
 class Reclame:
     def __init__(self):
@@ -183,8 +185,6 @@ class Reclame:
                 if self.t2 != 0:
                     self.timer = pygame.time.set_timer(pygame.USEREVENT, 1000)
                     self.t2 -= 1
-                # else:
-                #     self.timer = pygame.time.set_timer(pygame.USEREVENT, 0)
             else:
                 self.t1 -= 1
         if 0 < self.t2 < 10:
@@ -238,27 +238,32 @@ class Pause:
 
 class GG:
     def __init__(self):
+
         self.x = 120
         self.y = 320
+        self.image = [gg_heading_right, gg_heading_left]
         self.is_player_heading_right = True
         self.V = [0, 0]
         self.acceleration = [0, 0]
-        self.skin = [gg_heading_right, gg_heading_left]
+        self.guns = Guns()
+        self.collision = False
+
+        self.g = 0
 
     def draw(self):
         keys = pygame.key.get_pressed()
 
         if keys[pygame.K_1]:
-            self.skin = [gg_heading_right, gg_heading_left]
+            self.image = [gg_heading_right, gg_heading_left]
         if keys[pygame.K_2]:
-            self.skin = [js_heading_right, js_heading_left]
+            self.image = [js_heading_right, js_heading_left]
         if keys[pygame.K_3]:
-            self.skin = [US_heading_right, US_heading_left]
+            self.image = [US_heading_right, US_heading_left]
 
         if self.is_player_heading_right:
-            screen.blit(self.skin[0], (self.x, self.y)) 
+            screen.blit(self.image[0], (self.x, self.y)) 
         elif not self.is_player_heading_right:
-            screen.blit(self.skin[1], (self.x, self.y)) 
+            screen.blit(self.image[1], (self.x, self.y)) 
 
     def physics(self):
         keys = pygame.key.get_pressed()
@@ -275,8 +280,8 @@ class GG:
             if self.V[0] >= -10:
                 self.V[0] -= 2
 
-        self.y += self.V[1] 
-        self.x += self.V[0]  
+        self.y += round(self.V[1]) 
+        self.x += round(self.V[0])
 
         self.V[0] += self.acceleration[0] 
         self.V[1] += self.acceleration[1] 
@@ -286,7 +291,9 @@ class GG:
         if keys[pygame.K_SPACE]:
             if self.y == 675: 
                 self.V[1] -= 20
-
+        self.guns.box()
+        # 
+        # print(self.guns.x_box, self.guns.y_box)
         if self.y > 675: 
             self.y = 675 
             self.acceleration[1] = 0 
@@ -297,20 +304,45 @@ class GG:
         elif self.y < 675: 
             self.acceleration[1] = 1 
 
+        if self.guns.time == 0:
+            if self.y + 122 >= self.guns.y_box:
+                if self.guns.x_box <= self.x <= self.guns.x_box + 48:
+                    self.collision = True
+                    self.g +=1 
+                    print(self.g)
+                elif self.guns.x_box <= self.x + 70 <= self.guns.x_box + 48:
+                    self.collision = True
+                    self.g +=1 
+                    print(self.g)
+
+        if self.collision:
+            if self.image == [gg_heading_right, gg_heading_left]:
+                self.image = [pitonist_with_USGUN_right, pitonist_with_USGUN_left]
+                self.collision = False
+            if self.image == [js_heading_right, js_heading_left]:
+                self.image = [js_with_USGUN_right, js_with_USGUN_left]
+                self.collision = False
+
+    def e(self, event):
+        self.guns.e(event)
+
+
+
+
+
 class Guns:
     def __init__(self):
-        self.gg = GG()
         self.x_box = randrange(20, 1400)
         self.y_box = randrange(100, 500)
         self.V = 20
         self.acceleration = 0
-        self.time = randrange(5, 12)
+        self.time = randrange(1, 12)
         self.timer = pygame.time.set_timer(pygame.USEREVENT, 1000)
 
     def box(self):
         if self.time == 0:
             screen.blit(box_with_guns, (self.x_box, self.y_box))
-            self.y_box += self.V 
+            self.y_box += round(self.V) 
             self.V += self.acceleration
             self.V *= 1.03
 
@@ -323,12 +355,12 @@ class Guns:
                     self.V = 0 
             elif self.y_box < 675: 
                 self.acceleration = 1
+        
             
     def e(self, event):
         if event.type == pygame.USEREVENT:
             if self.time != 0:
                 self.time -= 1
-
 
     def shot(self):
         keys = pygame.key.get_pressed()
